@@ -58,6 +58,23 @@ must be reviewed for new R2 call sites before production deployment.
 
 ## Verification
 
+## Usage display and public fallback
+
+The signed-in upload and management pages load `/api/storage-summary` on entry,
+on demand, and every five minutes while visible. Anonymous access is denied.
+Storage is the conservative guard ledger; monthly operations are the independent
+local meter, not a billing statement, and may omit pre-installation operations.
+The reporting thresholds match the guard's 85% thresholds.
+
+Blocked R2 reads serve a tiny built-in SVG without calling R2 or an AI service.
+It intentionally returns HTTP 200 so browser image elements render it, with
+`Cache-Control: no-store` so it does not remain after recovery. HEAD has no body.
+No private quota/error details appear in the image. Set `IMGBED_RESTORE_AT` to an
+operator-confirmed future ISO timestamp to display a recovery estimate in China
+time; absent/invalid/past timestamps show a generic maintenance message. Artwork
+is fixed; its dated text is reused in memory until the configured time changes.
+This does not automatically reset or unlock the guard at a month boundary.
+
 `npm test` includes real SQLite concurrency and error tests for the guard, in
 addition to the existing upload/read/management regression suite. The existing
 route fixtures mock the guard boundary; `costGuard.test.js` exercises the actual
