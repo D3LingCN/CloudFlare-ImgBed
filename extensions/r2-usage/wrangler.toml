@@ -4,7 +4,8 @@ compatibility_date = "2026-10-15"
 workers_dev = false
 
 [triggers]
-crons = ["30 15 * * *"]
+# This installation now runs reconciliation on the BaoTa server's systemd timer.
+crons = []
 
 [vars]
 R2_USAGE_SYNC_URL = "https://img.d3ling.cn/api/r2-usage/sync"
