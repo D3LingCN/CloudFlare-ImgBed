@@ -15,10 +15,10 @@
 
 ## 部署与权限
 
-1. 独立 D1 数据库 `d3ling-r2-usage`，初始化 `schema.sql`，生产 Pages 绑定 `R2_USAGE_DB`。
+1. 独立 D1 数据库 `d3ling-r2-usage`（本部署 ID `b821a0b4-d317-44c9-8f43-5f2d72259b7c`），初始化 `schema.sql`，生产 Pages 绑定 `R2_USAGE_DB`。
 2. Pages 变量：`R2_USAGE_ENABLED=1`、`R2_USAGE_BUCKET=d3ling-imgbed-files`、`R2_USAGE_ACCOUNT_ID`；复用 Pages 已有 `CF_R2_ANALYTICS_TOKEN`，不扩大其只读统计权限。
 3. 对随机 256-bit Token 做 SHA-256，把 hash、scope（read 或 sync）和 label 写入 `usage_tokens`；数据库不存明文。scope=read 只能读取统计，scope=sync 只能 POST 同步。吊销时将对应记录 `revoked` 改为 1。不可在 URL 中传 Token。
-4. 部署 `scheduler.js` 为独立 Worker `d3ling-r2-usage-sync`，变量 `R2_USAGE_SYNC_URL=https://img.d3ling.cn/api/r2-usage/sync`，机密 `R2_USAGE_SYNC_TOKEN` 使用 scope=sync 的 Token。Worker 不绑定 R2/D1、不持有管理员密码或官方统计 Token；只调用同步接口。配置唯一 Cron `30 15 * * *`。
+4. 部署 `scheduler.js` 为独立 Worker `d3ling-r2-usage-sync`，变量 `R2_USAGE_SYNC_URL=https://img.d3ling.cn/api/r2-usage/sync`，机密 `R2_USAGE_SYNC_TOKEN` 使用 scope=sync 的 Token。Worker 不绑定 R2/D1、不持有管理员密码或官方统计 Token；只调用同步接口。配置唯一 Cron `30 15 * * *`。本部署使用 Cloudflare Workers Builds 连接同一个已授权 GitHub 仓库，main 分支，部署命令为 `npx wrangler deploy --config extensions/r2-usage/wrangler.toml`，预览构建关闭。
 5. `node extensions/r2-usage/install.mjs`、`node extensions/r2-usage/check-integration.mjs`、`node --test extensions/r2-usage/usage.test.mjs`；然后正常部署 Pages。
 
 统计明细不记录文件名、图片内容、URL、IP 或认证信息。每个 R2 SDK 调用增加一条发起计数写入及一条结果写入；数据库使用仍受账户 D1 免费额度限制。计数前数据库写入失败则不调用 R2；调用后结果写入失败保留发起数（显示未确认）。

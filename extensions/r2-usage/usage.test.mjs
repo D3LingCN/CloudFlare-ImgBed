@@ -7,6 +7,7 @@ import { classify, sha256, DAY } from './core.js';
 import { parseOperations, reconcile, syncUsage } from './analytics.js';
 import { handleApi } from './api.js';
 import { trigger } from './scheduler.js';
+import { getGuardedR2, LIMITS as GUARD_LIMITS } from '../../functions/utils/r2CostGuard.js';
 
 function fixture(){
  const sql=new DatabaseSync(':memory:');sql.exec(fs.readFileSync(new URL('./schema.sql',import.meta.url),'utf8'));
@@ -29,6 +30,15 @@ test('failed SDK calls persist attempts; absent ledger blocks before accessing R
  const f=fixture();f.raw.get=async()=>{throw new Error('upstream failure')};await assert.rejects(()=>f.bucket.get('x'),/upstream failure/);const row=f.sql.prepare('SELECT * FROM usage_local').get();assert.equal(row.attempts,1);assert.equal(row.failed,1);
  f.sql.exec('DROP TABLE usage_local');await assert.rejects(()=>f.bucket.put('x','v'));assert.deepEqual(f.calls,[]);
  assert.throws(()=>getMeteredR2({...f.env,R2_USAGE_DB:undefined},f.raw),/database/);
+});
+test('integrated quota wrapper only meters accepted operations and never meters a blocked read',async()=>{
+ const f=fixture();f.sql.exec(fs.readFileSync(new URL('../../database/migrations/r2_cost_guard.sql',import.meta.url),'utf8'));
+ f.sql.prepare("UPDATE r2_cost_guard SET checked_at=?,error='' WHERE id=1").run(Date.now());
+ const guarded=getGuardedR2({...f.env,img_d1:f.db,img_r2:f.raw});
+ await guarded.get('x');assert.equal(f.sql.prepare("SELECT attempts FROM usage_local WHERE action='GetObject'").get().attempts,1);
+ f.sql.prepare('UPDATE r2_cost_guard SET reserved_b=?').run(GUARD_LIMITS.b);
+ await assert.rejects(()=>guarded.get('x'),/R2/);assert.equal(f.sql.prepare("SELECT attempts FROM usage_local WHERE action='GetObject'").get().attempts,1);
+ assert.deepEqual(f.calls,['get']);
 });
 test('UTC midnight completion is attributed to the attempt window',async()=>{
  const f=fixture(),original=Date.now;Date.now=()=>Date.parse('2026-10-14T23:59:59Z');
