@@ -1,3 +1,4 @@
+import { servicePlaceholder } from '../utils/servicePlaceholder.js';
 import { getGuardedR2 } from '../utils/r2CostGuard.js';
 import { createS3Client } from '../utils/storage/s3Client.js';
 import { GetObjectCommand } from "@aws-sdk/client-s3";
@@ -731,7 +732,8 @@ async function handleR2File(context, fileId, encodedFileName, fileType) {
             headers,
         });
     } catch (error) {
-        return new Response(`Error: Failed to fetch from R2 - ${error.message}`, {
+        if (error?.name === 'R2GuardError') return servicePlaceholder(context.request, context.env);
+        return new Response('图片暂时不可用', {
             status: error?.name === 'R2GuardError' ? 503 : 500,
             headers: { 'Cache-Control': 'no-store' },
         });

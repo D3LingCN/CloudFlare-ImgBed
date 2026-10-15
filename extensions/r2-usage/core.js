@@ -1,7 +1,7 @@
 export const VERSION = 1;
 export const DAY = 86_400_000;
 export const DEFAULT_BUCKET = 'd3ling-imgbed-files';
-export const LIMITS = Object.freeze({ a: 500_000, b: 5_000_000, bytes: 8_000_000_000 });
+export const LIMITS = Object.freeze({ a: 850_000, b: 8_500_000, bytes: 8_500_000_000 });
 export const FREE_TIER = Object.freeze({ a: 1_000_000, b: 10_000_000 });
 const a = new Set(['listbuckets','putbucket','listobjects','listobjectsv2','putobject','copyobject','completemultipartupload','createmultipartupload','lifecyclestoragetiertransition','listmultipartuploads','uploadpart','uploadpartcopy','listparts','putbucketencryption','putbucketcors','putbucketlifecycleconfiguration']);
 const b = new Set(['headbucket','headobject','getobject','usagesummary','getbucketencryption','getbucketlocation','getbucketcors','getbucketlifecycleconfiguration']);
