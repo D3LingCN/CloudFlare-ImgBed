@@ -1,3 +1,4 @@
+import { getGuardedR2 } from '../../../utils/r2CostGuard.js';
 import { createS3Client } from '../../../utils/storage/s3Client.js';
 import { CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { purgeCFCache, purgeRandomFileListCache, purgePublicFileListCache } from "../../../utils/purgeCache";
@@ -139,7 +140,7 @@ async function moveFile(env, fileId, newFileId, cdnUrl, url) {
 
         // 如果是R2渠道的图片，需要移动R2中对应的图片
         if (img.metadata?.Channel === 'CloudflareR2') {
-            const R2DataBase = env.img_r2;
+            const R2DataBase = getGuardedR2(env);
 
             // 获取原文件内容
             const object = await R2DataBase.get(fileId);

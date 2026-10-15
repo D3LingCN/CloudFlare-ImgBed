@@ -1,3 +1,4 @@
+import { getGuardedR2 } from '../utils/r2CostGuard.js';
 import { createS3Client } from '../utils/storage/s3Client.js';
 /* ======= 客户端分块上传处理 ======= */
 import { createResponse, selectConsistentChannel, getUploadIp, getIPAddress, buildUniqueFileId, endUpload } from './uploadTools';
@@ -376,7 +377,7 @@ async function uploadSingleChunkToR2Multipart(context, chunkData, chunkIndex, to
             return { success: false, error: 'No R2 channel provided' };
         }
 
-        const R2DataBase = env.img_r2;
+        const R2DataBase = getGuardedR2(env);
         const multipartKey = `multipart_${uploadId}`;
 
         let finalFileId;
@@ -978,7 +979,7 @@ export async function cleanupFailedMultipartUploads(context, uploadId, uploadCha
 
         if (uploadChannel === 'cfr2') {
             // 清理R2 multipart upload
-            const R2DataBase = env.img_r2;
+            const R2DataBase = getGuardedR2(env);
             const multipartUpload = R2DataBase.resumeMultipartUpload(multipartInfo.key, multipartInfo.uploadId);
             await multipartUpload.abort();
 

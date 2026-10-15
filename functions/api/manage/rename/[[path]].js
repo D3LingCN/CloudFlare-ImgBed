@@ -1,3 +1,4 @@
+import { getGuardedR2 } from '../../../utils/r2CostGuard.js';
 import { createS3Client } from '../../../utils/storage/s3Client.js';
 import { CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { purgeCFCache, purgeRandomFileListCache, purgePublicFileListCache } from "../../../utils/purgeCache";
@@ -117,7 +118,7 @@ export async function onRequest(context) {
 
         // 如果是 R2 渠道的图片，需要移动 R2 中对应的图片
         if (metadata?.Channel === 'CloudflareR2') {
-            const R2DataBase = env.img_r2;
+            const R2DataBase = getGuardedR2(env);
 
             // 获取原文件内容
             const object = await R2DataBase.get(fileId);

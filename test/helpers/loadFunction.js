@@ -8,6 +8,9 @@ let sequence = 0;
 // always use the shared utility; serverImports.mjs also checks unmodified imports
 // with the production loader, which this isolated loader cannot validate.
 export async function loadFunction(path, mocks = {}, globals = {}) {
+    // Legacy route fixtures isolate storage at this boundary. The actual guard
+    // and its SQL reservations are exercised independently in costGuard.test.js.
+    mocks = { getGuardedR2: env => env.img_r2, ...mocks };
     const filename = resolve(path);
     const key = `__functionTest${sequence++}`;
     globalThis[key] = { mocks, globals };

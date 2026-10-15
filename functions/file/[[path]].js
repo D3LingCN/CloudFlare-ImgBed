@@ -1,3 +1,4 @@
+import { getGuardedR2 } from '../utils/r2CostGuard.js';
 import { createS3Client } from '../utils/storage/s3Client.js';
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { fetchSecurityConfig } from "../utils/sysConfig";
@@ -670,7 +671,7 @@ async function handleR2File(context, fileId, encodedFileName, fileType) {
             return new Response('Error: Please configure R2 database', { status: 500 });
         }
 
-        const R2DataBase = env.img_r2;
+        const R2DataBase = getGuardedR2(env);
 
         // 检查Range请求头
         const range = request.headers.get('Range');

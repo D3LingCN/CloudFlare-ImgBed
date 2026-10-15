@@ -1,3 +1,4 @@
+import { getGuardedR2 } from '../utils/r2CostGuard.js';
 import { createS3Client } from '../utils/storage/s3Client.js';
 import { userAuthCheck, UnauthorizedResponse } from "../utils/auth/userAuth";
 import { fetchUploadConfig, fetchSecurityConfig, fetchPageConfig } from "../utils/sysConfig";
@@ -314,7 +315,7 @@ async function uploadFileToCloudflareR2(context, fullId, metadata, returnLink) {
         r2Channel = r2Settings.channels[0];
     }
 
-    const R2DataBase = env.img_r2;
+    const R2DataBase = getGuardedR2(env);
 
     // 写入R2数据库
     await R2DataBase.put(fullId, formdata.get('file'), {

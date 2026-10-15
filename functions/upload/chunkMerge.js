@@ -1,3 +1,4 @@
+import { getGuardedR2 } from '../utils/r2CostGuard.js';
 import { createS3Client } from '../utils/storage/s3Client.js';
 /* ========== 分块合并处理 ========== */
 import { createResponse, getUploadIp, getIPAddress, selectConsistentChannel, buildUniqueFileId, endUpload, sanitizeUploadFolder } from './uploadTools';
@@ -250,7 +251,7 @@ async function mergeR2ChunksInfo(context, uploadId, completedChunks, metadata) {
     const db = getDatabase(env);
 
     try {
-        const R2DataBase = env.img_r2;
+        const R2DataBase = getGuardedR2(env);
         const multipartKey = `multipart_${uploadId}`;
 
         // 获取multipart info

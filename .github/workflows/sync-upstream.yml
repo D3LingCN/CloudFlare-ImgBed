@@ -6,8 +6,8 @@ permissions:
   issues: write
 
 on:
-  schedule:
-    - cron: "0 0 * * *" # every day
+  # This fork contains cost controls. Review upstream R2 call sites manually
+  # before dispatching synchronization; unattended updates must not deploy.
   workflow_dispatch:
     inputs:
       confirm_breaking_update:
