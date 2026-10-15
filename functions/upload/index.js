@@ -18,7 +18,15 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getDatabase } from '../utils/databaseAdapter.js';
 
 
-export async function onRequest(context) {  // Contents of context object
+export async function onRequest(context) {
+    try { return await handleRequest(context); }
+    catch (error) {
+        if (error?.name === 'R2GuardError') return Response.json({ success:false,error:error.message }, { status:503,headers:{'Cache-Control':'no-store'} });
+        throw error;
+    }
+}
+
+async function handleRequest(context) {  // Contents of context object
     const { request, env, params, waitUntil, next, data } = context;
 
     // 解析请求的URL，存入 context

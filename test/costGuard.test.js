@@ -6,6 +6,7 @@ import { getGuardedR2, LIMITS, parseAnalytics, refreshAnalytics } from '../funct
 function fixture() {
     const sqlite = new DatabaseSync(':memory:');
     sqlite.exec(fs.readFileSync('database/migrations/r2_cost_guard.sql','utf8'));
+    sqlite.exec('UPDATE r2_cost_guard SET observed_bytes=0,observed_a=0,observed_b=0');
     sqlite.prepare("UPDATE r2_cost_guard SET checked_at=?,error='' WHERE id=1").run(Date.now());
     const db = { prepare(sql) { return { bind(...args) { return {
         async first() { return sqlite.prepare(sql).get(...args) || null; },

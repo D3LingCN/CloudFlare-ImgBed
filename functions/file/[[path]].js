@@ -731,7 +731,10 @@ async function handleR2File(context, fileId, encodedFileName, fileType) {
             headers,
         });
     } catch (error) {
-        return new Response(`Error: Failed to fetch from R2 - ${error.message}`, { status: 500 });
+        return new Response(`Error: Failed to fetch from R2 - ${error.message}`, {
+            status: error?.name === 'R2GuardError' ? 503 : 500,
+            headers: { 'Cache-Control': 'no-store' },
+        });
     }
 }
 

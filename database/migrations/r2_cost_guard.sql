@@ -13,3 +13,8 @@ CREATE TABLE IF NOT EXISTS r2_cost_guard (
  error TEXT NOT NULL DEFAULT 'Not reconciled'
 );
 INSERT OR IGNORE INTO r2_cost_guard(id) VALUES(1);
+-- Cover the tiny pre-installation test files/operations while analytics lags.
+-- This installation was a new bucket containing only synthetic test images.
+-- Never lower an existing baseline or clear existing reservations.
+UPDATE r2_cost_guard SET observed_bytes=MAX(observed_bytes,1000000),
+ observed_a=MAX(observed_a,1000),observed_b=MAX(observed_b,1000) WHERE id=1;

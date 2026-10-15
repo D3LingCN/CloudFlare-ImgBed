@@ -24,6 +24,9 @@ This is a small addition to the official CloudFlare-ImgBed, not a replacement.
   requires a deliberate review of account billing and all stored/partial objects.
   This avoids resetting in the wrong billing period or accidentally forgiving
   operations still inside the free allowance window.
+- The migration seeds a conservative 1 MB / 1000 A / 1000 B baseline for the
+  verified new bucket containing only tiny synthetic pre-installation tests.
+  A different or previously used account requires a separately audited baseline.
 - Each write includes 8192 bytes of overhead. Multipart parts reserve twice the
   payload plus overhead to cover transient storage. Unknown-length streams are
   rejected; copies of R2 streams carry their known original size.
