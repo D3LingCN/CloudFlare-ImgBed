@@ -3,7 +3,7 @@
 <title>图床费用保护</title>
 <style>body{font:16px/1.7 system-ui;background:#f5f7fa;color:#172033;max-width:850px;margin:40px auto;padding:20px}main{background:white;padding:28px;border-radius:16px}h1{margin-top:0}button,a{font:inherit}button{padding:8px 16px;margin-right:12px;cursor:pointer}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f1f4f8;padding:16px}#state{font-weight:bold}</style>
 <main><h1>图床费用保护</h1><p id="state">正在读取保护状态…</p>
-<p>容量保护上限 8 GB；A 类操作上限 50 万次，B 类操作上限 500 万次。调用 R2 前先原子预扣，任一额度耗尽或统计异常就停止 R2 操作。</p>
+<p>保护阈值按 R2 Standard 官方免费额度的 85% 设置：容量上限 8.5 GB；A 类操作上限 85 万次，B 类操作上限 850 万次。调用 R2 前先原子预扣，任一额度耗尽或统计异常就停止 R2 操作。</p>
 <p>这里显示的是保守保护账本，不是实际账单。失败、重试、覆盖和删除不返还额度；账本不会按月自动清零。Cloudflare 延迟用量每五分钟按需核对，统计失败即关闭访问。</p>
 <button id="read">刷新状态</button><button id="sync">核对 Cloudflare 用量</button><a href="/dashboard">管理后台</a>
 <pre id="detail"></pre><p>需要管理员登录。此保护只能约束本图床；请勿用其他程序、R2 控制台或 S3 密钥绕过图床上传和读取。它不是 Cloudflare 官方费用硬上限。</p></main>

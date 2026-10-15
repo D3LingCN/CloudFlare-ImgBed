@@ -1,7 +1,7 @@
 // Account-wide analytics is a delayed cross-check, never the request-time ledger.
 // Reservations are atomic, durable, conservative and NEVER automatically reset.
 import { getMeteredR2 } from '../../extensions/r2-usage/meter.js';
-export const LIMITS = Object.freeze({ bytes: 8_000_000_000, a: 500_000, b: 5_000_000 });
+export const LIMITS = Object.freeze({ bytes: 8_500_000_000, a: 850_000, b: 8_500_000 });
 const REFRESH_MS = 5 * 60_000;
 const ACCOUNT = 'aa3fac9ba450aac479a59bfbb8e6ab1c';
 const wrappers = new WeakMap();

@@ -4,8 +4,9 @@ This is a small addition to the official CloudFlare-ImgBed, not a replacement.
 
 ## Limits and accounting
 
-- Maximum conservative storage ledger: **8,000,000,000 bytes**, decimal GB.
-- A operations: **500,000**; B operations: **5,000,000**. Equality also blocks.
+- Thresholds are 85% of the R2 Standard monthly free allowances.
+- Maximum conservative storage ledger: **8,500,000,000 bytes**, decimal GB.
+- A operations: **850,000**; B operations: **8,500,000**. Equality also blocks.
 - Every operation reserves its budget in one conditional D1 `UPDATE … RETURNING`
   before invoking R2. Competing uploads cannot spend the same remaining bytes.
 - A read or write is refused if **any** limit is exhausted, the ledger is missing,
@@ -49,7 +50,7 @@ dashboard operations, stale upstream analytics and unrelated Cloudflare products
 remain outside its control. Keep this R2 bucket private, avoid other writers,
 and keep Pages/D1 on their free plans. D1 exhaustion causes the gate to close.
 Stopping requests does not remove existing stored data or undo accrued charges.
-Because the account is intentionally limited to 8 GB with safety headroom, keep
+Because the account is intentionally limited to 8.5 GB with safety headroom, keep
 all account storage within that allowance, including unfinished uploads.
 
 Automatic upstream synchronization is disabled for this fork: upstream changes

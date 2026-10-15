@@ -32,7 +32,7 @@ describe('R2 cost protection (real SQLite)',()=>{
         await assert.rejects(()=>f.bucket.put('key',new Uint8Array(10)),/storage failed/);
         assert.equal(f.row().reserved_bytes,16404);
     });
-    it('atomically rejects competing uploads crossing 8 decimal GB',async()=>{
+    it('atomically rejects competing uploads crossing the storage threshold',async()=>{
         const f=fixture();f.sqlite.prepare('UPDATE r2_cost_guard SET reserved_bytes=?').run(LIMITS.bytes-9000);
         const results=await Promise.allSettled(Array.from({length:20},()=>f.bucket.put('key',new Uint8Array(100))));
         assert.equal(results.filter(r=>r.status==='fulfilled').length,1);assert.equal(f.calls.length,1);
