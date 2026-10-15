@@ -1,0 +1,11 @@
+[Unit]
+Description=Nightly image hosting usage reconciliation
+
+[Timer]
+OnCalendar=*-*-* 23:30:00 Asia/Shanghai
+Persistent=true
+RandomizedDelaySec=30
+Unit=d3ling-imgbed-sync.service
+
+[Install]
+WantedBy=timers.target

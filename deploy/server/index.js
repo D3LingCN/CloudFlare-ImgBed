@@ -416,6 +416,7 @@ async function fetchWithNativeResponse(request, env, executionCtx) {
 
 serve({
     fetch: fetchWithNativeResponse,
+    hostname: process.env.BIND_HOST || '0.0.0.0',
     port,
 }, (info) => {
     console.log(`Server running at http://0.0.0.0:${info.port}`);

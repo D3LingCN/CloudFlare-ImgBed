@@ -1,0 +1,19 @@
+[Unit]
+Description=Reconcile image hosting monthly usage
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=imgbed
+Group=imgbed
+WorkingDirectory=/www/wwwroot/d3ling-imgbed/current
+EnvironmentFile=/www/wwwroot/d3ling-imgbed/server.env
+ExecStart=/www/server/nodejs/v24.22.0/bin/node deploy/server/syncUsage.mjs
+CPUQuota=25%
+MemoryMax=256M
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/www/wwwroot/d3ling-imgbed/data
+UMask=0077

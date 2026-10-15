@@ -1,0 +1,29 @@
+[Unit]
+Description=Independent Sanyue image hosting
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=imgbed
+Group=imgbed
+WorkingDirectory=/www/wwwroot/d3ling-imgbed/current
+EnvironmentFile=/www/wwwroot/d3ling-imgbed/server.env
+Environment=NODE_ENV=production
+Environment=NODE_OPTIONS=--max-old-space-size=384
+Environment=PATH=/www/server/nodejs/v24.22.0/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/www/server/nodejs/v24.22.0/bin/node --import ./deploy/server/register.mjs deploy/server/index.js
+Restart=on-failure
+RestartSec=5
+CPUQuota=75%
+MemoryMax=768M
+TasksMax=128
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/www/wwwroot/d3ling-imgbed/data
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
