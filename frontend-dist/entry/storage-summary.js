@@ -35,7 +35,11 @@
     card?.remove(); route=path;
     card=document.createElement('section'); card.className='storage-summary'; card.hidden=true; card.setAttribute('aria-label','存储与本月用量');
     const main = app.querySelector('main');
-    (main || app).prepend(card); refresh();
+    const upload = app.querySelector('.upload-home');
+    if (main) main.prepend(card);
+    else if (upload) upload.append(card);
+    else app.prepend(card);
+    refresh();
     clearInterval(timer); timer=setInterval(refresh,300000);
   }
   new MutationObserver(mount).observe(document.querySelector('#app')||document.body,{childList:true,attributes:true,attributeFilter:['inert']});
