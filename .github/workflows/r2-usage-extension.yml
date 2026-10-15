@@ -1,0 +1,18 @@
+name: R2 usage extension checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - run: node extensions/r2-usage/check-integration.mjs
+      - run: node --test extensions/r2-usage/usage.test.mjs

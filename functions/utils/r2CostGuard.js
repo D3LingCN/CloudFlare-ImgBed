@@ -1,5 +1,6 @@
 // Account-wide analytics is a delayed cross-check, never the request-time ledger.
 // Reservations are atomic, durable, conservative and NEVER automatically reset.
+import { getMeteredR2 } from '../../extensions/r2-usage/meter.js';
 export const LIMITS = Object.freeze({ bytes: 8_000_000_000, a: 500_000, b: 5_000_000 });
 const REFRESH_MS = 5 * 60_000;
 const ACCOUNT = 'aa3fac9ba450aac479a59bfbb8e6ab1c';
@@ -113,10 +114,11 @@ async function reserve(env, a, b, bytes) {
     }
 }
 export function getGuardedR2(env) {
-    const raw = env.img_r2;
-    if (!raw) throw new R2GuardError('R2 未绑定');
+    const binding = env.img_r2;
+    if (!binding) throw new R2GuardError('R2 未绑定');
     // No mutable per-request environment and no replacement of the original binding.
-    if (wrappers.has(raw)) return wrappers.get(raw);
+    if (wrappers.has(binding)) return wrappers.get(binding);
+    const raw = getMeteredR2(env,binding);
     const multipart = handle => Object.freeze({
         key: handle.key, uploadId: handle.uploadId,
         async uploadPart(number, value, ...args) { await reserve(env,1,0,2*sizeOf(value)+8192); return handle.uploadPart(number,value,...args); },
@@ -140,7 +142,7 @@ export function getGuardedR2(env) {
         if (key in target) return Reflect.get(target,key);
         throw new R2GuardError('未受保护的 R2 方法');
     } });
-    wrappers.set(raw,bucket);
+    wrappers.set(binding,bucket);
     return bucket;
 }
 export async function guardStatus(env) {

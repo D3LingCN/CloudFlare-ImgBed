@@ -1,0 +1,11 @@
+name = "d3ling-r2-usage-sync"
+main = "scheduler.js"
+compatibility_date = "2026-10-15"
+workers_dev = false
+
+[triggers]
+crons = ["30 15 * * *"]
+
+[vars]
+R2_USAGE_SYNC_URL = "https://img.d3ling.cn/api/r2-usage/sync"
+# R2_USAGE_SYNC_TOKEN is a secret; never place its value here.
