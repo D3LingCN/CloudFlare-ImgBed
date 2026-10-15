@@ -27,6 +27,7 @@ COPY frontend-dist ./frontend-dist
 COPY functions ./functions
 COPY database ./database
 COPY deploy/server ./deploy/server
+COPY extensions ./extensions
 
 EXPOSE 8080
 CMD ["node", "--import", "./deploy/server/register.mjs", "deploy/server/index.js"]

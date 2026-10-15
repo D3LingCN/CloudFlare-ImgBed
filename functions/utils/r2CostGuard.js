@@ -43,6 +43,10 @@ export function parseAnalytics(data) {
         const action = item.dimensions?.actionType?.replace(/[^a-z0-9]/gi, '').toLowerCase();
         if (classA.has(action)) a += count;
         else if (classB.has(action)) b += count;
+        // Cloudflare dashboard emits this documented configuration read, whose
+        // billing class is not published. Reserve it in BOTH budgets rather than
+        // declaring it free or ignoring it. Other unknown actions still fail closed.
+        else if (action === 'getbucketsippyconfiguration') { a += count; b += count; }
         else if (!free.has(action) && count) throw new R2GuardError('出现未识别的 R2 操作类型');
     }
     // Take the largest daily sample for EACH bucket, then sum ALL account buckets.

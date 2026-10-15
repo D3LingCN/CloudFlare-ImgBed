@@ -1,0 +1,29 @@
+services:
+  imgbed:
+    image: d3ling-imgbed:server
+    container_name: d3ling-imgbed
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=384
+      IMGBED_HOSTING_MODE: server
+      R2_STORAGE_MODE: cloudflare
+      R2_USAGE_ENABLED: "1"
+      DATA_DIR: /app/data
+    ports:
+      - "127.0.0.1:7658:8080"
+    volumes:
+      - ./data:/app/data
+    mem_limit: 768m
+    cpus: 0.75
+    pids_limit: 128
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: "3"

@@ -13,6 +13,7 @@ import { join, resolve, dirname } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { SqliteD1 } from './sqliteD1.js';
 import { LocalR2Storage } from './r2Storage.js';
+import { CloudflareR2 } from './cloudflareR2.js';
 import { dockerImageProcessor } from './imageProcessor.js';
 
 const NativeResponse = globalThis.Response;
@@ -73,7 +74,7 @@ globalThis.fetch = async function(input, init) {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = resolve(__dirname, '../..');
 const FUNCTIONS_DIR = resolve(ROOT_DIR, 'functions');
-const DATA_DIR = resolve(ROOT_DIR, 'data');
+const DATA_DIR = resolve(process.env.DATA_DIR || join(ROOT_DIR, 'data'));
 const port = parseInt(process.env.PORT || '8080', 10);
 
 // 确保数据目录存在
@@ -113,7 +114,10 @@ if (existsSync(migrationsDir)) {
 
 // ==================== 初始化 R2 存储 ====================
 
-const r2Storage = new LocalR2Storage(join(DATA_DIR, 'r2'));
+const r2Storage = process.env.R2_STORAGE_MODE === 'cloudflare'
+    ? new CloudflareR2(process.env) : new LocalR2Storage(join(DATA_DIR, 'r2'));
+const usageDb = new SqliteD1(join(DATA_DIR, 'usage.sqlite'));
+usageDb.exec(readFileSync(join(ROOT_DIR,'extensions/r2-usage/schema.sql'),'utf8'));
 
 // ==================== 创建环境对象 ====================
 
@@ -122,6 +126,8 @@ function createEnv() {
         ...process.env,
         img_d1: sqliteD1,
         img_r2: r2Storage,
+        IMGBED_HOSTING_MODE: 'server',
+        R2_USAGE_DB: usageDb,
         IMAGE_PROCESSOR: dockerImageProcessor,
     };
 }

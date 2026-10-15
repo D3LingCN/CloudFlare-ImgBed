@@ -11,6 +11,7 @@ export class SqliteD1 {
         this.db = new Database(dbPath);
         this.db.pragma('journal_mode = WAL');
         this.db.pragma('foreign_keys = ON');
+        this.db.pragma('busy_timeout = 5000');
     }
 
     /**
@@ -27,6 +28,15 @@ export class SqliteD1 {
     prepare(sql) {
         const db = this.db;
         return new SqliteD1Statement(db, sql);
+    }
+
+    async batch(statements) {
+        return this.db.transaction(() => statements.map(statement => {
+            if (statement._db !== this.db) throw new Error('Cross-database batch rejected');
+            const sql = this.db.prepare(statement._sql);
+            return sql.reader ? {success:true,results:sql.all(...statement._params)} :
+                {success:true,meta:sql.run(...statement._params)};
+        }))();
     }
 }
 
