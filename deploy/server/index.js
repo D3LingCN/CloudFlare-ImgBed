@@ -252,7 +252,9 @@ async function handleFunctionRequest(originalRequest, pathname) {
 
     // 记录外部 origin，供 fetch 拦截器使用
     // 不再重写请求 URL，保持 url.origin 为外部 origin
-    const request = originalRequest;
+    const request = process.env.PUBLIC_ORIGIN
+        ? new Request(new URL(pathname + new URL(originalRequest.url).search, process.env.PUBLIC_ORIGIN), originalRequest)
+        : originalRequest;
     const requestUrl = new URL(originalRequest.url);
     const internalOrigin = `http://localhost:${port}`;
     if (requestUrl.origin !== internalOrigin) {
