@@ -1,3 +1,6 @@
+// R2保护扩展：集中费用拦截。改动地图 docs/code-changes.md，字段 docs/database-schema.md。
+// 业务只能通过 getGuardedR2 获取桶；reserve 成功后才进入实际调用统计和远端 SDK。
+// 账户 ACCOUNT 是本 Fork 的部署常量，其他账户复用时必须与环境配置一起修改。
 // Account-wide analytics is a delayed cross-check, never the request-time ledger.
 // Reservations are atomic, durable, conservative and NEVER automatically reset.
 import { getMeteredR2 } from '../../extensions/r2-usage/meter.js';
@@ -89,6 +92,7 @@ export async function refreshAnalytics(env, now = Date.now()) {
     }
 }
 async function reserve(env, a, b, bytes) {
+    // R2保护扩展：严格小于三项阈值的单次 UPDATE 保证并发预留；不可改成先读后无条件写。
     integer(a); integer(b); integer(bytes);
     try {
         const db = env.img_d1;
@@ -118,6 +122,7 @@ async function reserve(env, a, b, bytes) {
     }
 }
 export function getGuardedR2(env) {
+    // R2保护扩展：包装顺序为 reserve → getMeteredR2 → SDK，不能交换或直接返回原桶。
     const binding = env.img_r2;
     if (!binding) throw new R2GuardError('R2 未绑定');
     // No mutable per-request environment and no replacement of the original binding.

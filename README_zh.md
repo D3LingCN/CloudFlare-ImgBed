@@ -21,6 +21,14 @@
 
 ---
 
+## 本 Fork：宝塔服务器 + 私有 R2 + 费用保护
+
+本仓库在原项目基础上增加了服务器私有 R2 适配、85% 保守费用拦截、独立用量统计和上传/管理页的白色可收缩侧栏。图片保留在 R2，业务与统计数据库在服务器持久化。
+
+**[部署教程](docs/server-deployment.md) · [代码改动地图](docs/code-changes.md) · [新增数据库表与字段](docs/database-schema.md) · [配置模板](deploy/server/server.env.example)**
+
+这是本 Fork 的实例部署策略，旧 Cloudflare 图床默认返回维护页；其他账户复用前须按教程修改账户常量与实例配置。保护账本不自动月初清零，应用拦截也不能控制绕过图床的外部存储操作。
+
 > [!IMPORTANT]
 >
 > **遇到问题请务必先查看[公告](https://github.com/MarSeventh/CloudFlare-ImgBed/discussions/categories/announcements)和[Telegram频道](https://t.me/sanyue_club)信息，重要通知和非兼容性更新内容均会在公告中说明！**

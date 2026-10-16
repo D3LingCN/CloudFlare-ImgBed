@@ -1,3 +1,5 @@
+// R2保护扩展：服务器私有 R2 的桶接口兼容层，见 docs/code-changes.md。
+// 这里不判断额度；业务必须从 getGuardedR2 调用它，禁止另建绕过保护的业务 SDK。
 import {
     S3Client, GetObjectCommand, HeadObjectCommand, PutObjectCommand,
     ListObjectsV2Command, DeleteObjectCommand, DeleteObjectsCommand,

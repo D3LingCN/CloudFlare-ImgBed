@@ -21,6 +21,12 @@
 
 ---
 
+## This fork: server hosting with private R2 and cost protection
+
+This fork adds private R2 access from a self-hosted server, conservative quota reservations, independent usage reporting, and a collapsible usage drawer. Images stay in R2; application and reporting data persist in two server-side SQLite databases. Legacy Cloudflare hosting is in maintenance mode by default.
+
+Chinese documentation: **[Deployment](docs/server-deployment.md) · [Code changes](docs/code-changes.md) · [Database schema](docs/database-schema.md) · [Configuration example](deploy/server/server.env.example)**. Review instance-specific account constants before reuse. Protection counters never automatically reset, and application controls cannot prevent operations through external credentials or public bucket access.
+
 > [!IMPORTANT]
 >
 > **If you encounter issues, please check the [announcements](https://github.com/MarSeventh/CloudFlare-ImgBed/discussions/categories/announcements) and [Telegram channel](https://t.me/sanyue_club) first. Important notices and breaking changes will be explained in the announcements!**

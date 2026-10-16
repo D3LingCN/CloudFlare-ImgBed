@@ -1,3 +1,4 @@
+// R2保护扩展：报表阈值须与保护模块 LIMITS 一起审查；FREE_TIER 仅作免费额度分母。
 export const VERSION = 1;
 export const DAY = 86_400_000;
 export const DEFAULT_BUCKET = 'd3ling-imgbed-files';

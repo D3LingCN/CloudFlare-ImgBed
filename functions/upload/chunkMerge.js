@@ -1,3 +1,4 @@
+// R2保护扩展接缝：分片完成同样经过保护包装器；定位见 docs/code-changes.md。
 import { getGuardedR2 } from '../utils/r2CostGuard.js';
 import { createS3Client } from '../utils/storage/s3Client.js';
 /* ========== 分块合并处理 ========== */

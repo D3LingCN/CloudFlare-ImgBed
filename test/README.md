@@ -12,6 +12,8 @@ Use Node.js 22 and the repository's existing Mocha setup from the main repositor
 npm ci
 npm test
 npm run test:server
+node extensions/r2-usage/check-integration.mjs
+node --test extensions/r2-usage/usage.test.mjs
 npx --no-install wrangler pages functions build functions --outdir data/ci-pages-build
 ```
 
@@ -42,8 +44,14 @@ The current Mocha entry point automatically loads `.js` test files directly insi
 | AI tags | [ai.test.js](ai.test.js) | `api/manage/ai/tags.js` | Original formats, preview-type normalization, signatures and size limits; AI invocation only for valid input |
 | Shared file-type rules | [fileTypes.test.js](fileTypes.test.js) | `utils/mimeTypes.js` | MIME normalization, case-sensitive parameters, explicit-type precedence, extension inference, unknown/ambiguous extensions and random-image keywords versus strict classification |
 | Server imports | [smoke/serverImports.mjs](smoke/serverImports.mjs) | Main routes above and `functions/dav/` | Unmodified route imports and handler exports through the production loader |
+| R2 cost guard | [costGuard.test.js](costGuard.test.js) | `utils/r2CostGuard.js` | Real SQLite reservations, concurrent thresholds, failure locks, unknown operations and high-water marks |
+| Server private R2 | [serverR2.test.js](serverR2.test.js) | `deploy/server/cloudflareR2.js` | S3 commands, metadata, ranges, multipart and errors without live cloud access |
+| Usage drawer API | [storageSummary.test.js](storageSummary.test.js) | `api/storage-summary.js` | Auth before analytics, stale-sample refresh without lowering counters, and fail-closed errors |
+| Maintenance image | [servicePlaceholder.test.js](servicePlaceholder.test.js) | `utils/servicePlaceholder.js` | Local SVG, no-store, HEAD and operator-confirmed recovery text |
+| Retired hosting | [hostingMaintenance.test.js](hostingMaintenance.test.js) | Root middleware | Non-server maintenance gate before downstream storage access |
+| Usage extension | [../extensions/r2-usage/usage.test.mjs](../extensions/r2-usage/usage.test.mjs) | `extensions/r2-usage/` | Metering, reports, reconciliation, token scopes and failures; run separately with Node's test runner |
 
-Business paths in the table are relative to `functions/`, except those already starting with `functions/`. Extend the relevant suite when changing one feature. A substantial independent feature can have its own module; add its entry points, scope and boundaries here instead of accumulating unrelated behavior in one file.
+Business paths in the table are relative to `functions/`, except paths starting with `functions/`, `deploy/`, or `extensions/`, which are relative to the repository root. Extend the relevant suite when changing one feature. A substantial independent feature can have its own module; add its entry points, scope and boundaries here instead of accumulating unrelated behavior in one file.
 
 ### Current coverage limits
 

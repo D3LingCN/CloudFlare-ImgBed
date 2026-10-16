@@ -1,7 +1,8 @@
 /**
- * Docker 模式下的原生 Node.js 服务器
+ * R2保护扩展：Docker / 宝塔 systemd 共用的原生 Node.js 服务器。
  * 使用 Hono 作为 Web 框架，代理 Cloudflare Pages Functions 请求
- * 使用 SQLite 替代 D1，本地文件系统替代 R2
+ * 使用 SQLite 替代 D1；R2_STORAGE_MODE=cloudflare 时连接原私有 R2，其他值使用本地存储。
+ * 新增第二统计库、固定公网 origin 和内部监听配置，详见 docs/server-deployment.md。
  */
 
 import { Hono } from 'hono';
@@ -117,6 +118,7 @@ if (existsSync(migrationsDir)) {
 const r2Storage = process.env.R2_STORAGE_MODE === 'cloudflare'
     ? new CloudflareR2(process.env) : new LocalR2Storage(join(DATA_DIR, 'r2'));
 const usageDb = new SqliteD1(join(DATA_DIR, 'usage.sqlite'));
+// R2保护扩展：统计 schema 单独初始化，绝不替换业务库或保护账本。
 usageDb.exec(readFileSync(join(ROOT_DIR,'extensions/r2-usage/schema.sql'),'utf8'));
 
 // ==================== 创建环境对象 ====================
@@ -251,7 +253,7 @@ async function handleFunctionRequest(originalRequest, pathname) {
     if (!funcInfo) return null;
 
     // 记录外部 origin，供 fetch 拦截器使用
-    // 不再重写请求 URL，保持 url.origin 为外部 origin
+    // R2保护扩展：代理后用固定 PUBLIC_ORIGIN 保持 HTTPS 上传链接与同源校验一致。
     const request = process.env.PUBLIC_ORIGIN
         ? new Request(new URL(pathname + new URL(originalRequest.url).search, process.env.PUBLIC_ORIGIN), originalRequest)
         : originalRequest;

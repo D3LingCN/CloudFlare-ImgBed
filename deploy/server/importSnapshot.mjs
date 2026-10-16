@@ -1,3 +1,5 @@
+// R2保护扩展：完整 JSON schema/rows 快照导入；不是 Wrangler .sql 导入器。
+// 不覆盖原库；行数/完整性检查之外，还应逐字段核验账号设置与保护计数。
 import fs from 'node:fs';
 import { resolve } from 'node:path';
 import { SqliteD1 } from './sqliteD1.js';

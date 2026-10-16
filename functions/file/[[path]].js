@@ -1,3 +1,4 @@
+// R2保护扩展接缝：读图先保护，R2GuardError 转本地维护图；其他错误不伪装成额度不足。
 import { servicePlaceholder } from '../utils/servicePlaceholder.js';
 import { getGuardedR2 } from '../utils/r2CostGuard.js';
 import { createS3Client } from '../utils/storage/s3Client.js';

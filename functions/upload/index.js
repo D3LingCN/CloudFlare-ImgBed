@@ -1,3 +1,4 @@
+// R2保护扩展接缝：普通上传与保护异常 503；不得直接绕过 getGuardedR2。
 import { getGuardedR2 } from '../utils/r2CostGuard.js';
 import { createS3Client } from '../utils/storage/s3Client.js';
 import { userAuthCheck, UnauthorizedResponse } from "../utils/auth/userAuth";

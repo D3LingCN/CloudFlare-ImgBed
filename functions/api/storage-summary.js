@@ -1,3 +1,5 @@
+// R2保护扩展：登录后的侧栏接口；先鉴权，再核对过期统计，失败仍保持 blocked。
+// 与 /api/r2-usage/status 的纯报表读取不同，本接口可能查询只读 Analytics，绝不读写对象。
 import { validateSession } from '../utils/auth/sessionManager.js';
 import { guardStatus, refreshAnalytics } from '../utils/r2CostGuard.js';
 import { handleApi } from '../../extensions/r2-usage/api.js';

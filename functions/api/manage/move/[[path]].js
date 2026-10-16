@@ -1,3 +1,4 @@
+// R2保护扩展接缝：移动涉及读取、写入和删除，各步骤都通过同一包装器。
 import { getGuardedR2 } from '../../../utils/r2CostGuard.js';
 import { createS3Client } from '../../../utils/storage/s3Client.js';
 import { CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";

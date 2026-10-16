@@ -1,3 +1,4 @@
+// R2保护扩展接缝：分片初始化和各 part 分别预留，恢复句柄不等于免除后续保护。
 import { getGuardedR2 } from '../utils/r2CostGuard.js';
 import { createS3Client } from '../utils/storage/s3Client.js';
 /* ======= 客户端分块上传处理 ======= */

@@ -1,3 +1,4 @@
+// R2保护扩展接缝：重命名的复制/删除不得绕过费用预留与实际调用统计。
 import { getGuardedR2 } from '../../../utils/r2CostGuard.js';
 import { createS3Client } from '../../../utils/storage/s3Client.js';
 import { CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";

@@ -1,3 +1,4 @@
+// R2保护扩展接缝：删除也受统一锁定策略控制，账本不因删除退款。
 import { getGuardedR2 } from '../../../utils/r2CostGuard.js';
 import { createS3Client } from '../../../utils/storage/s3Client.js';
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";

@@ -1,3 +1,5 @@
+// R2保护扩展：夜间月报与完整 UTC 日差异，写 usage_sync_runs / usage_reconciliation。
+// 与费用保护的 5 分钟核对分开：此模块不清零、不降低、不解锁 r2_cost_guard。
 import { DAY, classify, integer, dayOf, monthOf, totals, bucketName, database } from './core.js';
 
 export function parseOperations(payload) {

@@ -1,3 +1,5 @@
+// R2保护扩展：实际 SDK 尝试计量层，对应 usage_local；不是额度预留账本。
+// 先持久化 attempts，成功后才调用远端；结果记录失败也不能退款或假定未发生。
 import { classify, dayOf, bucketName, database } from './core.js';
 
 // Runs immediately before an actual SDK method, after the existing quota guard.

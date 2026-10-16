@@ -1,3 +1,6 @@
+// R2保护扩展：A 方案白色可收缩用量侧栏，唯一维护入口见 docs/code-changes.md。
+// /、/upload、/dashboard 使用登录会话读取 API；前端只展示，费用拦截全部由后端执行。
+// 重建 frontend-dist 后需保留本文件和 index.html 的 script 引入，install.mjs 不会恢复侧栏。
 (() => {
  let root,panel,trigger,content,loading=false,last=0,route="",authorized=false;
  const num=n=>Number(n).toLocaleString('zh-CN'), gb=n=>n<1e7?`${(n/1e6).toFixed(1)} MB`:`${(n/1e9).toFixed(2)} GB`;

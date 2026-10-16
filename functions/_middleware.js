@@ -1,3 +1,4 @@
+// R2保护扩展：本 Fork 的迁移停用开关，不是上游项目默认策略。
 // Cloudflare deployment is retired during the server migration.
 // The server deployment must explicitly set IMGBED_HOSTING_MODE=server.
 // Reject before auth, databases, usage analytics, or object storage are touched.

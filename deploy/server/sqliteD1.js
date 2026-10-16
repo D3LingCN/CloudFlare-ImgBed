@@ -31,6 +31,7 @@ export class SqliteD1 {
     }
 
     async batch(statements) {
+        // R2保护扩展：官方日差异与成功状态同库事务提交；禁止误称为两份库的跨库事务。
         return this.db.transaction(() => statements.map(statement => {
             if (statement._db !== this.db) throw new Error('Cross-database batch rejected');
             const sql = this.db.prepare(statement._sql);
