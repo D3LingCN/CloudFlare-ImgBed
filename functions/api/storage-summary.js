@@ -1,5 +1,5 @@
 import { validateSession } from '../utils/auth/sessionManager.js';
-import { guardStatus } from '../utils/r2CostGuard.js';
+import { guardStatus, refreshAnalytics } from '../utils/r2CostGuard.js';
 import { handleApi } from '../../extensions/r2-usage/api.js';
 export async function onRequest(context) {
     const headers = {'Cache-Control':'private, no-store'};
@@ -8,6 +8,14 @@ export async function onRequest(context) {
         const admin = (await validateSession(context.env,context.request,'admin')).valid;
         const user = admin || (await validateSession(context.env,context.request,'user')).valid;
         if (!user) return Response.json({error:'Authentication required'},{status:401,headers});
+        // Reconcile an expired sample before describing availability. This uses
+        // the read-only Analytics API, not an R2 operation, and keeps all ledger
+        // reservations/high-water marks. A failed refresh remains fail-closed.
+        const previous = await guardStatus(context.env);
+        if (!previous.state || previous.state.error ||
+            Date.now()-previous.state.checked_at >= previous.refreshIntervalSeconds*1000) {
+            await refreshAnalytics(context.env);
+        }
         const url = new URL(context.request.url); url.pathname='/api/r2-usage/status';
         const request = new Request(url,{headers:context.request.headers});
         const response = await handleApi({...context,request},async()=>true,()=>guardStatus(context.env));
